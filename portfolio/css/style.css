@@ -265,6 +265,11 @@ body {
     width: 550px;
 }
 
+.doom-window {
+    width: 700px;
+    height: 550px;
+}
+
 /* Content Styles */
 .code-comment {
     color: #666;

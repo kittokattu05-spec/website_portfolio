@@ -38,6 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Global state variables
     let isDark = false;        // Current theme state (false = light, true = dark)
     let zIndexCounter = 100;   // Z-index counter for window stacking order
+    let dosboxLoaded = false;  // Flag to track if JS-DOS API is loaded
+
+    // Load JS-DOS API globally for DOOM
+    const dosboxScript = document.createElement('script');
+    dosboxScript.src = 'assets/doom_on_js-dos-main/js-dos-api.js';
+    dosboxScript.onload = () => { dosboxLoaded = true; };
+    document.head.appendChild(dosboxScript);
 
     // Sound system - Audio files for user interactions
     // All sounds are preloaded and have reduced volume for better UX
@@ -244,6 +251,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'projects') {
             // Initialize slideshow after window is rendered
             setTimeout(() => initializeSlideshow(), 100);
+        } else if (type === 'doom') {
+            // Initialize DOOM emulator after window is rendered
+            setTimeout(() => initializeDoom(), 200);
         }
     }
 
@@ -264,6 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (type === 'faq') windowEl.classList.add('faq-window');
         else if (type === 'links') windowEl.classList.add('links-window');
         else if (type === 'contact') windowEl.classList.add('contact-window');
+        else if (type === 'doom') windowEl.classList.add('doom-window');
         windowEl.style.zIndex = zIndexCounter++;
 
         const titleBar = document.createElement('div');
@@ -298,7 +309,8 @@ document.addEventListener('DOMContentLoaded', () => {
             projects: { top: '80px', left: '80px' },
             faq: { top: '150px', left: '150px' },
             links: { top: '200px', left: '200px' },
-            contact: { top: '250px', left: '120px' }
+            contact: { top: '250px', left: '120px' },
+            doom: { top: '60px', left: '150px' }
         };
         const pos = positions[type] || { top: '100px', left: '100px' };
         Object.assign(windowEl.style, pos);
@@ -313,7 +325,8 @@ document.addEventListener('DOMContentLoaded', () => {
             projects: 'projects/',
             faq: 'faq.txt',
             links: 'links.url',
-            contact: 'contact.info'
+            contact: 'contact.info',
+            doom: 'DOOM.exe'
         };
         return titles[type] || type;
     }
@@ -682,6 +695,19 @@ stack: mobile & web development
                         </div>
                     </div>
                 `;
+            case 'doom':
+                return `
+                    <div style="text-align: center;">
+                        <h2>🎮 DOOM</h2>
+                        <div class="code-comment">// classic retro gaming in your browser</div>
+                        <div id="DOOM" class="dosbox-default" style="margin: 20px 0; display: flex; justify-content: center;"></div>
+                        <div style="margin-top: 15px;">
+                            <button id="fullscreen_DOOM" class="nav-button" style="margin-right: 10px;">⛶ Fullscreen</button>
+                            <a href="assets/doom_on_js-dos-main/MANUAL.MD" target="_blank" class="nav-button">📖 Manual</a>
+                        </div>
+                        <div class="code-comment" style="margin-top: 20px;">// Use arrow keys to move, Ctrl to shoot<br>// ESC to pause and menu</div>
+                    </div>
+                `;
             default:
                 return '<p>Content not available.</p>';
         }
@@ -846,6 +872,47 @@ stack: mobile & web development
 
         // Start auto-play initially
         startAutoPlay();
+    }
+
+    /**
+     * Initialize DOOM emulator
+     * Sets up the JS-DOS emulator to run DOOM in a window
+     */
+    function initializeDoom() {
+        // Wait for JS-DOS API to load
+        if (typeof Dosbox === 'undefined') {
+            // Try again if not loaded yet
+            setTimeout(initializeDoom, 100);
+            return;
+        }
+
+        // Check if DOOM container exists
+        const doomContainer = document.getElementById('DOOM');
+        if (!doomContainer) return;
+
+        // Initialize the DOS emulator
+        try {
+            var dosbox_DOOM = new Dosbox({
+                id: "DOOM",
+                onload: function (dosbox) {
+                    console.log("DOS emulator loaded");
+                    dosbox_DOOM.run("assets/doom_on_js-dos-main/DOOM-@evilution.zip", "./DOOM/DOOM.EXE");
+                },
+                onrun: function (dosbox, app) {
+                    console.log("DOOM is running");
+                }
+            });
+
+            // Add fullscreen button functionality
+            var fullscreenBtn = document.getElementById("fullscreen_DOOM");
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener("click", function() {
+                    dosbox_DOOM.requestFullScreen();
+                });
+            }
+        } catch (e) {
+            console.error("Error initializing DOOM:", e);
+        }
     }
 
     /**
