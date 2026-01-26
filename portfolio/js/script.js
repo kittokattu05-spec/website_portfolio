@@ -608,7 +608,7 @@ stack: mobile & web development
                     </div>
                     <div class="email-button-container">
                         <a href="mailto:keithlouie.panagsagan@gmail.com" class="send-email-btn">
-                            📧 Send Email
+                             Send Email
                         </a>
                     </div>
                     <div class="code-comment" style="margin-top: 20px;">// looking forward to hearing from you!<br>feel free to reach out for any inquiries ✨</div>
@@ -619,7 +619,7 @@ stack: mobile & web development
                     <div class="code-comment">// illustrations & photography</div>
                     <div class="creative-section">
                         <div class="creative-category">
-                            <h3>🎨 Illustrations</h3>
+                            <h3> Illustrations</h3>
                             <div class="code-comment">// digital art & creative designs</div>
                             <div class="creative-grid">
                                 <div class="creative-item">
@@ -698,7 +698,7 @@ stack: mobile & web development
             case 'doom':
                 return `
                     <div style="text-align: center;">
-                        <h2>🎮 DOOM</h2>
+                        <h2> DOOM</h2>
                         <div class="code-comment">// classic retro gaming in your browser</div>
                         <div id="DOOM" class="dosbox-default" style="margin: 20px 0; display: flex; justify-content: center;"></div>
                         <div style="margin-top: 15px;">
